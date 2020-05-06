@@ -1,8 +1,7 @@
 package fit.sudor.assessment.domain;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "TRAINER")
@@ -13,11 +12,8 @@ public class Trainer {
     @Column(name = "ID")
     private Long id;
 
-    @Column(name = "NAME")
+    @Column(name = "NAME", unique = true)
     private String name;
-
-    @OneToMany(mappedBy = "trainer", fetch = FetchType.LAZY)
-    private List<Workout> workouts = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -35,11 +31,16 @@ public class Trainer {
         this.name = name;
     }
 
-    public List<Workout> getWorkouts() {
-        return workouts;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Trainer trainer = (Trainer) o;
+        return id.equals(trainer.id);
     }
 
-    public void setWorkouts(List<Workout> workouts) {
-        this.workouts = workouts;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

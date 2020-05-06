@@ -1,15 +1,15 @@
 package fit.sudor.assessment.controller;
 
 import fit.sudor.assessment.domain.Workout;
+import fit.sudor.assessment.dto.TrainerDto;
 import fit.sudor.assessment.dto.WorkoutDto;
 import fit.sudor.assessment.service.WorkoutService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+@CrossOrigin(origins = {"http://localhost:3000"})
 @RestController
 @RequestMapping("/workouts")
 public class WorkoutController {
@@ -23,7 +23,12 @@ public class WorkoutController {
     @PostMapping
     public ResponseEntity<WorkoutDto> saveWorkout(@RequestBody WorkoutDto workoutDto) {
         if (workoutDto.getName() == null || workoutDto.getName().isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "name field can not be null");
+        }
+
+        TrainerDto trainerDto = workoutDto.getTrainer();
+        if (trainerDto == null || trainerDto.getId() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "trainer  id field can not be null");
         }
 
         Workout workout = workoutService.save(workoutDto.toWorkout());
