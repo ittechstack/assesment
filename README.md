@@ -12,9 +12,9 @@ This is a single page Spring Boot and React application. The functionality of ap
 
 ### Prerequisites
 
-* Java 11
+* Java 11.06 (OpenJdk)
 * Git
-* Maven 4
+* Maven 3.6
 * npm 6+
 * Docker (if you want to run it in a container)
 
