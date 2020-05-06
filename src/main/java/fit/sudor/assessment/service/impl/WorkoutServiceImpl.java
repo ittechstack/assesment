@@ -2,6 +2,7 @@ package fit.sudor.assessment.service.impl;
 
 import fit.sudor.assessment.domain.Trainer;
 import fit.sudor.assessment.domain.Workout;
+import fit.sudor.assessment.exception.SameNameException;
 import fit.sudor.assessment.exception.TrainerNotFoundException;
 import fit.sudor.assessment.repo.TrainerRepo;
 import fit.sudor.assessment.repo.WorkoutRepo;
@@ -24,6 +25,17 @@ public class WorkoutServiceImpl implements WorkoutService {
 
     @Override
     public Workout save(Workout workout) {
+        Optional<Trainer> optional = trainerRepo.findById(workout.getTrainer().getId());
+
+        Trainer trainer = optional.orElseThrow(TrainerNotFoundException::new);
+
+        Workout workoutWithSameName = workoutRepo.findFirstByTrainerAndNameIgnoreCase(trainer, workout.getName());
+        if (workoutWithSameName != null) {
+            throw new SameNameException();
+        }
+
+        workout.setTrainer(trainer);
+
         return workoutRepo.save(workout);
     }
 

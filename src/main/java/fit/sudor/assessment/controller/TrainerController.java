@@ -9,10 +9,12 @@ import fit.sudor.assessment.service.WorkoutService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@CrossOrigin(origins = {"http://localhost:3000"})
 @RestController
 @RequestMapping("/trainers")
 public class TrainerController {
@@ -23,6 +25,25 @@ public class TrainerController {
     public TrainerController(TrainerService trainerService, WorkoutService workoutService) {
         this.trainerService = trainerService;
         this.workoutService = workoutService;
+    }
+
+    @GetMapping
+    public List<TrainerDto> getAll() {
+        return trainerService.getAll()
+                .stream()
+                .map(TrainerDto::from)
+                .collect(Collectors.toList());
+    }
+
+    @PostMapping
+    public ResponseEntity<TrainerDto> saveTrainer(@RequestBody TrainerDto trainerDto) {
+        if (trainerDto.getName() == null || trainerDto.getName().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "name field can not be null");
+        }
+
+        Trainer trainer = trainerService.save(trainerDto.toTrainer());
+
+        return new ResponseEntity<>(TrainerDto.from(trainer), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}/workouts")
@@ -37,16 +58,5 @@ public class TrainerController {
                 .collect(Collectors.toList());
 
         return workoutDtoList;
-    }
-
-    @PostMapping
-    public ResponseEntity<TrainerDto> saveTrainer(@RequestBody TrainerDto trainerDto) {
-        if (trainerDto.getName() == null || trainerDto.getName().isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        Trainer trainer = trainerService.save(trainerDto.toTrainer());
-
-        return new ResponseEntity<>(TrainerDto.from(trainer), HttpStatus.CREATED);
     }
 }

@@ -6,6 +6,7 @@ public class WorkoutDto {
 
     private Long id;
     private String name;
+    private TrainerDto trainer;
 
     public Long getId() {
         return id;
@@ -34,6 +35,15 @@ public class WorkoutDto {
         Workout workout = new Workout();
         workout.setId(this.getId());
         workout.setName(this.getName());
+        workout.setTrainer(this.getTrainer().toTrainer());
         return workout;
+    }
+
+    public TrainerDto getTrainer() {
+        return trainer;
+    }
+
+    public void setTrainer(TrainerDto trainer) {
+        this.trainer = trainer;
     }
 }

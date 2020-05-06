@@ -9,4 +9,6 @@ import java.util.List;
 public interface WorkoutRepo extends JpaRepository<Workout, Long> {
 
     List<Workout> findByTrainer(Trainer trainer);
+
+    Workout findFirstByTrainerAndNameIgnoreCase(Trainer trainer, String name);
 }

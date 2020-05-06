@@ -1,9 +1,12 @@
 package fit.sudor.assessment.domain;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
-@Table(name = "WORKOUT")
+@Table(name = "WORKOUT", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"TRAINER_ID", "NAME"})
+})
 public class Workout {
 
     @Id
@@ -40,5 +43,18 @@ public class Workout {
 
     public void setTrainer(Trainer trainer) {
         this.trainer = trainer;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Workout workout = (Workout) o;
+        return id.equals(workout.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
